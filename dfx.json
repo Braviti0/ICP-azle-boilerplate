@@ -7,7 +7,7 @@
       "root": "src",
       "ts": "src/index.ts",
       "candid": "src/index.did",
-      "wasm": ".azle/message_board/message_board.wasm.gz"
+      "wasm": ".azle/studentRecords/studentRecords.wasm.gz"
     }
   }
 }
