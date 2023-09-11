@@ -69,11 +69,13 @@ export function getStudentById(id: nat64): Result<student, string> {
 $update
 export function initAdmin(payload: adminPayload): Result<string, string> {
     if (moderator.username != "" || moderator.hashKey != "") {
-    moderator.username = payload.userName;
-    moderator.hashKey = hashPassword(payload.password);
-    return Result.Ok<string, string>("Admin set successfully");
-    } else {
         return Result.Err<string, string>("Admin already set");
+    } else if (payload.userName == "" || payload.password == "") {
+        return Result.Err<string, string>("Username and password are required");
+    }  else {
+        moderator.username = payload.userName;
+        moderator.hashKey = hashPassword(payload.password);
+        return Result.Ok<string, string>("Admin set successfully");
     }
 }
 
