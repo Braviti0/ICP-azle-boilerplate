@@ -54,12 +54,12 @@ const students = new StableBTreeMap<nat64, student>(0, 200, 200);
 
 var nextStudentId: nat64 = BigInt(1);
 
-var moderator: admin;
+var moderator: admin = { username: "", hashKey: "" };
 
 $query
 export function getStudentById(id: nat64): Result<student, string> {
     return match(students.get(id), {
-        Some: (studentWithId) => Result.Ok<student, string>(studentWithId),
+        Some: (studentWithId: student) => Result.Ok<student, string>(studentWithId),
         None: () => Result.Err<student, string>(`student with id=${id} does not exist or may have been deleted`)
     });
 
@@ -68,9 +68,13 @@ export function getStudentById(id: nat64): Result<student, string> {
 
 $update
 export function initAdmin(payload: adminPayload): Result<string, string> {
+    if (moderator.username != "" || moderator.hashKey != "") {
     moderator.username = payload.userName;
     moderator.hashKey = hashPassword(payload.password);
     return Result.Ok<string, string>("Admin set successfully");
+    } else {
+        return Result.Err<string, string>("Admin already set");
+    }
 }
 
 $update
@@ -110,7 +114,7 @@ export function getStudentCount(): Result<nat, string> {
 
 $query
 export function getStudentByName(payload: studentByNamePayload): Result<Vec<student>, string> {
-    return Result.Ok<Vec<student>, string>(students.values().filter(student => student.first_name == payload.firstName && student.last_name == payload.lastName));
+    return Result.Ok<Vec<student>, string>(students.values().filter(theStudent => theStudent.first_name == payload.firstName && theStudent.last_name == payload.lastName));
 }
 
 $query
